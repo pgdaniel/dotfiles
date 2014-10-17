@@ -1,0 +1,11 @@
+.DS_Store
+.rbx
+.powrc
+.rvmrc
+.rbenv-version
+.ruby-version
+.rbenv-vars
+public/system
+public/uploads
+tags
+*.tags
