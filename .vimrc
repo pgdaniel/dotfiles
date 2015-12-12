@@ -1,39 +1,18 @@
-" Use Vim settings, rather then Vi settings. This setting must be as early as
-" possible, as it has side effects.
-set nocompatible              " be iMproved, required
-filetype off                  " required
+runtime macros/matchit.vim
+set nocompatible
+filetype off
 
-" set the runtime path to include Vundle and initialize
+" Vundle
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-
-" let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
+source ~/.vim-plugins
+call vundle#end()
 
-Bundle 'kien/ctrlp.vim.git'
-Bundle 'tpope/vim-rails.git'
-Bundle 'tpope/vim-bundler.git'
-Bundle 'tpope/vim-dispatch.git'
-Bundle 'tpope/vim-fugitive.git'
-Bundle 'tpope/vim-surround.git'
-Bundle 'mattn/emmet-vim.git'
-Bundle 'vim-scripts/tComment'
-Bundle 'mileszs/ack.vim'
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'scrooloose/syntastic'
-Bundle 'mustache/vim-mustache-handlebars'
-Bundle 'ngmy/vim-rubocop'
-Bundle 'thoughtbot/vim-rspec'
-Bundle 'jelera/vim-javascript-syntax'
-Bundle 'pangloss/vim-javascript'
-Bundle 'nathanaelkane/vim-indent-guides.git'
-Bundle 'Raimondi/delimitMate'
-Bundle 'scrooloose/nerdtree'
+if has("autocmd")
+  filetype indent plugin on
+end
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
 filetype plugin indent on    " required
 
 " Leader
@@ -43,7 +22,7 @@ set backspace=2   " Backspace deletes like most programs in insert mode
 set nobackup
 set nowritebackup
 set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
-set history=50
+set history=200
 set ruler         " show the cursor position all the time
 set showcmd       " display incomplete commands
 set incsearch     " do incremental searching
@@ -65,29 +44,15 @@ filetype plugin indent on
 augroup vimrcEx
   autocmd!
 
-  " For all text files set 'textwidth' to 78 characters.
   autocmd FileType text setlocal textwidth=78
-
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it for commit messages, when the position is invalid, or when
-  " inside an event handler (happens when dropping a file on gvim).
   autocmd BufReadPost *
     \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
     \   exe "normal g`\"" |
     \ endif
 
-  " Cucumber navigation commands
-  autocmd User Rails Rnavcommand step features/step_definitions -glob=**/* -suffix=_steps.rb
-  autocmd User Rails Rnavcommand config config -glob=**/* -suffix=.rb -default=routes
-
   " Set syntax highlighting for specific file types
   autocmd BufRead,BufNewFile Appraisals set filetype=ruby
   autocmd BufRead,BufNewFile *.md set filetype=markdown
-
-  " Enable spellchecking for Markdown
-  autocmd FileType markdown setlocal spell
-
-  " Automatically wrap at 80 characters for Markdown
   autocmd BufRead,BufNewFile *.md setlocal textwidth=80
 augroup END
 
@@ -113,10 +78,10 @@ if executable('ag')
 endif
 
 " Color scheme
-set background=dark
-colorscheme delek
-highlight NonText guibg=#060606
-highlight Folded  guibg=#0A0A0A guifg=#9090D0
+" set background=dark
+" colorscheme delek
+" highlight NonText guibg=#060606
+" highlight Folded  guibg=#0A0A0A guifg=#9090D0
 
 " Numbers
 set number
@@ -155,6 +120,7 @@ nnoremap <Down> :echoe "Use j"<CR>
 nnoremap <Leader>t :call RunCurrentSpecFile()<CR>
 nnoremap <Leader>s :call RunNearestSpec()<CR>
 nnoremap <Leader>l :call RunLastSpec()<CR>
+let g:rspec_command = "Dispatch rspec {spec}"
 
 " Run commands that require an interactive shell
 nnoremap <Leader>r :RunInInteractiveShell<space>
@@ -177,9 +143,5 @@ let g:syntastic_check_on_open=1
 let g:syntastic_html_tidy_ignore_errors=[" proprietary attribute \"ng-"]
 let g:syntastic_filetype_map = { 'handlebars.html': 'handlebars' }
 
-" Local config
-if filereadable($HOME . "/.vimrc.local")
-  source ~/.vimrc.local
-endif
-
-let g:rspec_command = "Dispatch rspec {spec}"
+" set spell spelllang=en_us
+au BufNewFile,BufRead *.deface set filetype=html.eruby
